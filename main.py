@@ -23,7 +23,9 @@ class Bot(commands.Bot):
         
         if self.user.mentioned_in(message) and message.author.id == 235395642623655937:
             await message.channel.send(f"<:FYOUcat:1198281430971727893>")
-
+        print(message.content)
+        if message.content == "<@&1200932201596985439>":
+            await message.channel.send(f"<:FYOUcat:1198281430971727893>")
         # Let the bot process commands as well
         await self.process_commands(message)
 
@@ -31,21 +33,21 @@ class Bot(commands.Bot):
 intents = discord.Intents.all()
 bot = Bot(intents=intents)
 
-async def get_randomquote():
+async def get_random(endpoint):
     try:
-        response = requests.get("https://quote.digitalindividuals.com/quote")
+        response = requests.get(f"https://quote.digitalindividuals.com/{endpoint}/random")
         response.raise_for_status()
         return response.content.decode()
     except requests.exceptions.RequestException as e:
         print(f"Error fetching quote: {e}")
-        return "Failed to fetch quote."
+        return "Something went wrong, blame Rose >:3."
 
 
-
+## quotes
 @bot.hybrid_command(name='quote', description="this returns a random quote uwu")
 async def quote(interaction: discord.Interaction):
     try:
-        quote_content = await get_randomquote()
+        quote_content = await get_random("quotes")
         await interaction.reply(content=quote_content)
     except Exception as e:
         print(f"Error executing quote command: {e}")
@@ -68,14 +70,48 @@ async def newquote(interaction: discord.Interaction ,quote: str, who: str):
         "person": who,
         "dateTimeCreated": formatted_date
     }
-    response = requests.post("https://quote.digitalindividuals.com/quote", headers=headers, json=data)
+    response = requests.post("https://quote.digitalindividuals.com/Qoutes", headers=headers, json=data)
     decoded_response = response.content.decode()
     if decoded_response == 'true':
         await interaction.reply(content="quote added ^-^")
     else:
         await interaction.reply(content="something went wrong, blame rose >:3")
-        
 
+
+## rizz
+@bot.hybrid_command(name='rizz', description="this returns a random rizz >///<")
+async def quote(interaction: discord.Interaction):
+    try:
+        quote_content = await get_random("Rizzes")
+        await interaction.reply(content=quote_content)
+    except Exception as e:
+        print(f"Error executing quote command: {e}")
+        await interaction.reply(content="Failed to fetch rizz. Please try again later.")
+
+        
+@bot.hybrid_command(name='newrizz', description='WOAH, you actually have rizz to submit?!?!')
+async def newquote(interaction: discord.Interaction ,rizz: str, who: str):
+    
+    headers = {
+    'accept': 'text/plain',
+    'Content-Type': 'application/json',
+    }
+
+
+    current_utc_time = datetime.utcnow()
+    updated_time = current_utc_time + timedelta(hours=1)
+    formatted_date = updated_time.replace(microsecond=0).isoformat()
+    data = {
+        "text": rizz,
+        "person": who,
+        "dateTimeCreated": formatted_date
+    }
+    response = requests.post("https://quote.digitalindividuals.com/Rizzes", headers=headers, json=data)
+    decoded_response = response.content.decode()
+    if decoded_response == 'true':
+        await interaction.reply(content="Rizz added ^-^")
+    else:
+        await interaction.reply(content="something went wrong, blame rose >:3")
     
         
 
