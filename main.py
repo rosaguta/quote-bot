@@ -23,7 +23,6 @@ class Bot(commands.Bot):
         
         if self.user.mentioned_in(message) and message.author.id == 235395642623655937:
             await message.channel.send(f"<:FYOUcat:1198281430971727893>")
-        print(message.content)
         if message.content == "<@&1200932201596985439>":
             await message.channel.send(f"<:FYOUcat:1198281430971727893>")
         # Let the bot process commands as well
