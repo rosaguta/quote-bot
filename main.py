@@ -69,7 +69,7 @@ async def newquote(interaction: discord.Interaction ,quote: str, who: str):
         "person": who,
         "dateTimeCreated": formatted_date
     }
-    response = requests.post("https://quote.digitalindividuals.com/Qoutes", headers=headers, json=data)
+    response = requests.post("https://quote.digitalindividuals.com/Quotes", headers=headers, json=data)
     decoded_response = response.content.decode()
     if decoded_response == 'true':
         await interaction.reply(content="quote added ^-^")
