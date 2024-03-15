@@ -4,13 +4,31 @@ from discord.ext import commands
 import requests
 import os
 from datetime import datetime, timezone, timedelta
+import json
 
 
+BASE_ENDPOINT = os.getenv('BASE_ENDPOINT')
+API_USERNAME = os.getenv('API_USERNAME')
+API_PASSWORD = os.getenv('API_PASSWORD')
+
+async def GetToken():
+    headersList = {
+    "Accept": "*/*",
+    "Content-Type": "application/json" 
+    }
+    payload = json.dumps({
+    "username": API_USERNAME,
+    "password": API_PASSWORD
+    })
+    apitoken = requests.request("POST", BASE_ENDPOINT+"/Auth", data=payload,  headers=headersList)
+    return apitoken.content.decode()
+    
 class Bot(commands.Bot):
     def __init__(self, intents: discord.Intents, **kwargs):
         super().__init__(command_prefix="!", intents=intents, case_insensitive=True)
 
     async def on_ready(self):
+        
         print(f"Logged in as {self.user}")
         await self.tree.sync()
 
@@ -35,7 +53,7 @@ bot = Bot(intents=intents)
 
 async def get_random(endpoint):
     try:
-        response = requests.get(f"https://quote.digitalindividuals.com/{endpoint}/random")
+        response = requests.get(f"{BASE_ENDPOINT}/{endpoint}/random")
         response.raise_for_status()
         return response.content.decode()
     except requests.exceptions.RequestException as e:
@@ -55,10 +73,13 @@ async def quote(interaction: discord.Interaction):
 
 @bot.hybrid_command(name='newquote', description='create a new quote urself uwu')
 async def newquote(interaction: discord.Interaction ,quote: str, who: str):
+    token = await GetToken()
+    
     
     headers = {
     'accept': 'text/plain',
     'Content-Type': 'application/json',
+    'Authorization': f'Bearer {token}'
     }
 
 
@@ -70,7 +91,9 @@ async def newquote(interaction: discord.Interaction ,quote: str, who: str):
         "person": who,
         "dateTimeCreated": formatted_date
     }
-    response = requests.post("http://localhost:8080/Quotes", headers=headers, json=data)
+    print(headers)
+    print(data)
+    response = requests.post(f"{BASE_ENDPOINT}/Quotes", headers=headers, json=data)
     decoded_response = response.content.decode()
     if decoded_response == 'true':
         await interaction.reply(content="quote added ^-^")
@@ -91,10 +114,12 @@ async def quote(interaction: discord.Interaction):
         
 @bot.hybrid_command(name='newrizz', description='WOAH, you actually have rizz to submit?!?!')
 async def newquote(interaction: discord.Interaction ,rizz: str, who: str):
+    token = await GetToken()
     
     headers = {
     'accept': 'text/plain',
     'Content-Type': 'application/json',
+    'Authorization': f'Bearer {token}'
     }
 
 
@@ -106,7 +131,7 @@ async def newquote(interaction: discord.Interaction ,rizz: str, who: str):
         "person": who,
         "dateTimeCreated": formatted_date
     }
-    response = requests.post("https://quote.digitalindividuals.com/Rizzes", headers=headers, json=data)
+    response = requests.post(f"{BASE_ENDPOINT}/Rizzes", headers=headers, json=data)
     decoded_response = response.content.decode()
     if decoded_response == 'true':
         await interaction.reply(content="Rizz added ^-^")
