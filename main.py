@@ -91,11 +91,9 @@ async def newquote(interaction: discord.Interaction ,quote: str, who: str):
         "person": who,
         "dateTimeCreated": formatted_date
     }
-    print(headers)
-    print(data)
     response = requests.post(f"{BASE_ENDPOINT}/Quotes", headers=headers, json=data)
-    decoded_response = response.content.decode()
-    if decoded_response == 'true':
+    decoded_response = response.status_code
+    if decoded_response == 200:
         await interaction.reply(content="quote added ^-^")
     else:
         await interaction.reply(content="something went wrong, blame rose >:3")
@@ -132,8 +130,8 @@ async def newquote(interaction: discord.Interaction ,rizz: str, who: str):
         "dateTimeCreated": formatted_date
     }
     response = requests.post(f"{BASE_ENDPOINT}/Rizzes", headers=headers, json=data)
-    decoded_response = response.content.decode()
-    if decoded_response == 'true':
+    decoded_response = response.status_code
+    if decoded_response == 200:
         await interaction.reply(content="Rizz added ^-^")
     else:
         await interaction.reply(content="something went wrong, blame rose >:3")
