@@ -89,7 +89,8 @@ async def newquote(interaction: discord.Interaction ,quote: str, who: str):
     data = {
         "text": quote,
         "person": who,
-        "dateTimeCreated": formatted_date
+        "dateTimeCreated": formatted_date,
+        "context": ""
     }
     response = requests.post(f"{BASE_ENDPOINT}/Quotes", headers=headers, json=data)
     decoded_response = response.status_code
@@ -127,7 +128,8 @@ async def newquote(interaction: discord.Interaction ,rizz: str, who: str):
     data = {
         "text": rizz,
         "person": who,
-        "dateTimeCreated": formatted_date
+        "dateTimeCreated": formatted_date,
+        "context":""
     }
     response = requests.post(f"{BASE_ENDPOINT}/Rizzes", headers=headers, json=data)
     decoded_response = response.status_code
