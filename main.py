@@ -5,11 +5,15 @@ import requests
 import os
 from datetime import datetime, timezone, timedelta
 import json
+import random
 
 
 BASE_ENDPOINT = os.getenv('BASE_ENDPOINT')
 API_USERNAME = os.getenv('API_USERNAME')
 API_PASSWORD = os.getenv('API_PASSWORD')
+def select_random_asciiface():
+    asciifaces = [":3", "^-^", ":p", ":D", ";-;", "UwU", "OwO", "TwT"]
+    return random.choice(asciifaces)
 
 async def GetToken():
     headersList = {
@@ -95,7 +99,7 @@ async def newquote(interaction: discord.Interaction ,quote: str, who: str):
     response = requests.post(f"{BASE_ENDPOINT}/Quotes", headers=headers, json=data)
     decoded_response = response.status_code
     if decoded_response == 200:
-        await interaction.reply(content="quote added ^-^")
+        await interaction.reply(content=f"quote added {select_random_asciiface()}")
     else:
         await interaction.reply(content="something went wrong, blame rose >:3")
 
@@ -134,7 +138,7 @@ async def newquote(interaction: discord.Interaction ,rizz: str, who: str):
     response = requests.post(f"{BASE_ENDPOINT}/Rizzes", headers=headers, json=data)
     decoded_response = response.status_code
     if decoded_response == 200:
-        await interaction.reply(content="Rizz added ^-^")
+        await interaction.reply(content=f"Rizz added {select_random_asciiface()}")
     else:
         await interaction.reply(content="something went wrong, blame rose >:3")
     
